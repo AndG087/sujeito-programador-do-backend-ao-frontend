@@ -111,8 +111,21 @@ export class CustomersController {
         try {
             const { id } = request.params as ICustomerId;
 
+            const customerToDelete = await this.getCustomersService.getOneById(id);
+            if (!customerToDelete) {
+                return reply.status(404).send({
+                    status: 'error',
+                    message: 'Cliente não encontrado.'
+                });
+            }
+
             await this.editCustomersService.deleteOne(id);
-            
+
+            return reply.status(200).send({
+                status: 'success',
+                message: 'Cliente removido com sucesso.'
+            });
+
         } catch (error: any) {
             console.error(error)
             throw new Error(error);
